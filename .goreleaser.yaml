@@ -63,12 +63,11 @@ chocolateys:
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
     skip_publish: false
-
-brews:
-  - name: snippetkit
-    homepage: https://github.com/rishanreddy/snippetkit-cli
-    tap:
-      owner: rishanreddy
-      name: homebrew-snippetkit
-    commit_author:
-      name: rishanreddy
+# brews:
+#   - name: snippetkit
+#     homepage: https://github.com/rishanreddy/snippetkit-cli
+#     tap:
+#       owner: rishanreddy
+#       name: homebrew-snippetkit
+#     commit_author:
+#       name: rishanreddy
