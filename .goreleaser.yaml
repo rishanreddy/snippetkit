@@ -50,7 +50,7 @@ changelog:
       - "^test:"
 
 chocolateys:
-  - name: currentTime
+  - name: snippetkit
     title: "{{ .ProjectName }}"
     authors: Rishan Reddy
     project_url: https://github.com/rishanreddy/snippetkit-cli
@@ -63,6 +63,10 @@ chocolateys:
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
     skip_publish: false
+    description: |
+      {{ .ProjectName }} installer package.
+      Install snippets into your code base.
+
 # brews:
 #   - name: snippetkit
 #     homepage: https://github.com/rishanreddy/snippetkit-cli
