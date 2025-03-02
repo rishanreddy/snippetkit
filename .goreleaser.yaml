@@ -53,13 +53,22 @@ chocolateys:
   - name: currentTime
     title: "{{ .ProjectName }}"
     authors: Rishan Reddy
-    project_url: https://github.com/rishanreddy/snippetkit
-    url_template: "https://github.com/rishanreddy/snippetkit/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-    license_url: https://github.com/rishanreddy/snippetkit/blob/main/LICENSE
-    project_source_url: https://github.com/rishanreddy/snippetkit
+    project_url: https://github.com/rishanreddy/snippetkit-cli
+    url_template: "https://github.com/rishanreddy/snippetkit-cli/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    license_url: https://github.com/rishanreddy/snippetkit-cli/blob/main/LICENSE
+    project_source_url: https://github.com/rishanreddy/snippetkit-cli
     docs_url: https://snippetkit.vercel.app/docs
-    bug_tracker_url: https://github.com/rishanreddy/snippetkit/issues
-    release_notes: "https://github.com/rishanreddy/snippetkit/releases/tag/v{{ .Version }}"
+    bug_tracker_url: https://github.com/rishanreddy/snippetkit-cli/issues
+    release_notes: "https://github.com/rishanreddy/snippetkit-cli/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
     skip_publish: false
+
+brews:
+  - name: snippetkit
+    homepage: https://github.com/rishanreddy/snippetkit-cli
+    tap:
+      owner: rishanreddy
+      name: homebrew-snippetkit
+    commit_author:
+      name: rishanreddy
