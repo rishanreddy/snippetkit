@@ -67,11 +67,21 @@ chocolateys:
       {{ .ProjectName }} installer package.
       Install snippets into your code base.
 
-# brews:
-#   - name: snippetkit
-#     homepage: https://github.com/rishanreddy/snippetkit-cli
-#     tap:
-#       owner: rishanreddy
-#       name: homebrew-snippetkit
-#     commit_author:
-#       name: rishanreddy
+brews:
+  - name: snippetkit
+    commit_author:
+      name: rishanreddy
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    directory: Formula
+    description: "Install snippets into your code base."
+    license: "Apache-2.0"
+    install: |
+      bin.install "snippetkit"
+    test: |
+      system "#{bin}/snippetkit --version"
+    # Repository to push the generated files to.
+    repository:
+      owner: rishanreddy
+      name: homebrew-snippetkit
+      branch: main
+      token: "{{ .Env.GITHUB_TOKEN }}"
