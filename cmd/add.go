@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
 	"snippetkit/internal"
 
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +14,15 @@ import (
 var addPath string
 var addForce bool
 var addSilent bool
+
+func init() {
+	rootCmd.AddCommand(addCmd)
+
+	// Define CLI flags
+	addCmd.Flags().StringVarP(&addPath, "path", "p", "", "Specify install path for the snippet")
+	addCmd.Flags().BoolVarP(&addForce, "force", "f", false, "Force overwrite if file exists")
+	addCmd.Flags().BoolVarP(&addSilent, "silent", "s", false, "Suppress output")
+}
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -24,8 +33,16 @@ var addCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		snippetID := args[0]
 
+		internal.LoadConfig()
+		// Load API token from config file
+		apiToken, err := internal.GetAPIToken()
+		if err != nil {
+			fmt.Println("❌", err)
+			return
+		}
+
 		// Fetch snippet from API
-		snippet, err := internal.FetchSnippet(snippetID)
+		snippet, err := internal.FetchSnippet(snippetID, apiToken)
 		if err != nil {
 			fmt.Println("❌ Error fetching snippet:", err)
 			return
@@ -43,9 +60,45 @@ var addCmd = &cobra.Command{
 				defaultPath = filepath.Join(cwd, fmt.Sprintf("%s.%s", snippet.Title, snippet.Language))
 			}
 
-			// Ask user if they want to change the install path
-			if internal.YesNoPrompt(fmt.Sprintf("📂 Default install path: %s\nWould you like to change the path?", defaultPath), false) {
-				installPath = internal.GetUserInput("Enter new install path:", defaultPath)
+			fmt.Println("📂 Default install path:", defaultPath)
+
+			// Prompt user if they want to change the default install path
+			prompt := promptui.Select{
+				Label: "Do you want to change the install path?",
+				Items: []string{"No", "Yes"},
+			}
+
+			_, choice, err := prompt.Run()
+			if err != nil {
+				fmt.Println("❌ Error with prompt:", err)
+				return
+			}
+
+			if choice == "Yes" {
+				pathPrompt := promptui.Prompt{
+					Label:   "Enter new install path",
+
+					Validate: func(input string) error {
+						if len(input) == 0 {
+							if len(input) == 0 {
+								return fmt.Errorf("path cannot be empty")
+							}
+							cwd, err := os.Getwd()
+							if err != nil {
+								return fmt.Errorf("error getting current working directory: %w", err)
+							}
+							if !filepath.IsAbs(input) && !filepath.IsAbs(filepath.Join(cwd, input)) {
+								return fmt.Errorf("invalid path format")
+							}
+						}
+						return nil
+					},
+				}
+				installPath, err = pathPrompt.Run()
+				if err != nil {
+					fmt.Println("❌ Error entering path:", err)
+					return
+				}
 			} else {
 				installPath = defaultPath
 			}
@@ -71,11 +124,4 @@ var addCmd = &cobra.Command{
 
 		fmt.Println("✅ Snippet installed successfully at", installPath)
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(addCmd)
-	addCmd.Flags().StringVarP(&addPath, "path", "p", "", "Specify install path for the snippet (skips prompt)")
-	addCmd.Flags().BoolVarP(&addForce, "force", "f", false, "Force overwrite if file already exists")
-	addCmd.Flags().BoolVarP(&addSilent, "silent", "s", false, "Suppress output")
 }

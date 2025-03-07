@@ -26,12 +26,22 @@ var infoCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		snippetID := args[0]
 
+		internal.LoadConfig()
+		// Load API token from config file
+		apiToken, err := internal.GetAPIToken()
+		if err != nil {
+			fmt.Println("❌", err)
+			return
+		}
+
 		// Show loading spinner
 		// s := spinner.New(spinner.CharSets[9], 100*time.Millisecond)
 		// s.Start()
 
+
+
 		// Fetch snippet details from API
-		snippet, err := internal.FetchSnippet(snippetID)
+		snippet, err := internal.FetchSnippet(snippetID, apiToken)
 		// s.Stop()
 		if err != nil {
 			fmt.Println("❌ Error fetching snippet info:", err)
