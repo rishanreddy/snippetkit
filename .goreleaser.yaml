@@ -82,6 +82,6 @@ brews:
     # Repository to push the generated files to.
     repository:
       owner: rishanreddy
-      name: homebrew-snippetkit
+      name: snippetkit
       branch: main
       token: "{{ .Env.GITHUB_TOKEN }}"
