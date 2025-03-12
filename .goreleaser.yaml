@@ -62,6 +62,7 @@ chocolateys:
     release_notes: "https://github.com/rishanreddy/snippetkit/releases/tag/v{{ .Version }}"
     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
     source_repo: "https://push.chocolatey.org/"
+    tags: "go snippetkit cli snippets"
     skip_publish: false
     description: |
       {{ .ProjectName }} installer package.
