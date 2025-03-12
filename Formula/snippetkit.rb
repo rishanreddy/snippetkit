@@ -5,12 +5,12 @@
 class Snippetkit < Formula
   desc "Install snippets into your code base."
   homepage ""
-  version "0.1.1"
+  version "0.1.2"
   license "Apache-2.0"
 
   on_macos do
-    url "https://github.com/rishanreddy/snippetkit/releases/download/v0.1.1/snippetkit_Darwin_all.tar.gz"
-    sha256 "097660c243aa69ce23a987fae08e5a023fa1b15603b2cc72a7153dbffa9bce06"
+    url "https://github.com/rishanreddy/snippetkit/releases/download/v0.1.2/snippetkit_Darwin_all.tar.gz"
+    sha256 "ce51382189b9dde2834582d4129a78932db1acd51ad6805820fa8de8a3610015"
 
     def install
       bin.install "snippetkit"
@@ -20,8 +20,8 @@ class Snippetkit < Formula
   on_linux do
     if Hardware::CPU.intel?
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/rishanreddy/snippetkit/releases/download/v0.1.1/snippetkit_Linux_x86_64.tar.gz"
-        sha256 "b3a962f6b63d9d3817cf9e5ef30f7e4b7a59f01d8010b093e02a0521f65e3c5d"
+        url "https://github.com/rishanreddy/snippetkit/releases/download/v0.1.2/snippetkit_Linux_x86_64.tar.gz"
+        sha256 "c16c5d94641e58ee792654acfdbf9645f5c3b4bdd9b5280daa3d94fbfbe27423"
 
         def install
           bin.install "snippetkit"
@@ -30,8 +30,8 @@ class Snippetkit < Formula
     end
     if Hardware::CPU.arm?
       if Hardware::CPU.is_64_bit?
-        url "https://github.com/rishanreddy/snippetkit/releases/download/v0.1.1/snippetkit_Linux_arm64.tar.gz"
-        sha256 "ed90eedd4581f4b9244033336b1a7e95b405e5af59332da4b6c2cbe70a998500"
+        url "https://github.com/rishanreddy/snippetkit/releases/download/v0.1.2/snippetkit_Linux_arm64.tar.gz"
+        sha256 "d8f47b2aaaf264128e379883fcf5f826959d8de033ae0f86f191fa6c15e297c8"
 
         def install
           bin.install "snippetkit"
