@@ -34,7 +34,7 @@ type Snippet struct {
 
 // FetchSnippet fetches a single snippet from the API
 func FetchSnippet(snippetID string, apiKey string) (*Snippet, error) {
-	apiURL := fmt.Sprintf("http://localhost:3000/api/snippet/get?id=%s", snippetID)
+	apiURL := fmt.Sprintf("http://localhost:3000/api/snippet/get/%s", snippetID)
 
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
