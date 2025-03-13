@@ -3,44 +3,36 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"time"
+	"snippetkit/internal"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-var start time.Time
-
-// Root command for snippetkit CLI
 var rootCmd = &cobra.Command{
 	Use:   "snippetkit",
-	Short: "SnippetKit is a CLI tool for managing code snippets",
-	Long: `SnippetKit is a command-line tool that helps developers easily 
-add, manage, and retrieve code snippets from the snippetkit registry.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("🚀 Welcome to SnippetKit!\nUse 'snippetkit --help' to see available commands.")
-	},
-	// Start Timer BEFORE every command runs
+	Short: "SnippetKit - Easily manage reusable code snippets",
+	Long: `SnippetKit CLI allows you to search, add, and manage code snippets.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		start = time.Now()
+		internal.LoadConfig() // Load config before executing commands
+		internal.InitLogger()
 	},
-
-	// Show execution time AFTER every command runs
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
-		elapsed := time.Since(start)
-		fmt.Printf("\nProcessed in %d ms\n", elapsed.Milliseconds())
+	Run: func(cmd *cobra.Command, args []string) {
+		version := "internal.GetVersion() "// Pull the version dynamically
+		internal.Info(fmt.Sprintf("SnippetKit CLI v%s", version), nil)
+		cmd.Help() // Display the help command
 	},
 }
 
-// Execute runs the root command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println("❌ Error:", err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
 func init() {
-	// Here you can add global flags if needed
-	rootCmd.CompletionOptions.DisableDefaultCmd = false
-	// Example: rootCmd.PersistentFlags().StringVar(&flagVar, "flag", "", "A global flag description")
+	// Global Persistent Flags
+	rootCmd.PersistentFlags().StringP("config", "c", "", "Specify config file (default is $HOME/.snippetkit.yaml)")
+	viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
 }

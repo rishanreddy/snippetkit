@@ -124,16 +124,16 @@ func searchWithSpinner(query string) {
 
 	p := tea.NewProgram(m)
 
-	internal.LoadConfig()
 
 	// Run search in a separate goroutine
 	go func() {
-		token, tokenErr := internal.GetAPIToken()
-		if tokenErr != nil {
-			p.Send(fetchSnippetsMsg{snippets: nil, err: tokenErr})
+		// Load API token from config file
+		apiToken, err := internal.GetAPIKey()
+		if err != nil {
+			fmt.Println("❌ Error getting API token:", err)
 			return
 		}
-		snippets, err := internal.SearchSnippets(query, langFilter, tagFilter, limit, token)
+		snippets, err := internal.SearchSnippets(query, langFilter, tagFilter, limit, apiToken)
 		p.Send(fetchSnippetsMsg{snippets: snippets, err: err})
 	}()
 

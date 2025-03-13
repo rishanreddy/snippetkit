@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"snippetkit/internal"
 
 	"github.com/manifoldco/promptui"
@@ -10,33 +9,33 @@ import (
 
 // loginCmd represents the login command
 var loginCmd = &cobra.Command{
-	Use:   "login",
-	Short: "Authenticate and store your API token",
-	Long:  "Use this command to set and save your API token in config.yaml for authentication.",
-	Run: func(cmd *cobra.Command, args []string) {
-		// Prompt user for API token
-		prompt := promptui.Prompt{
-			Label: "Enter your API token",
-			Mask:  '*', // Hides input for security
-		}
+    Use:   "login",
+    Short: "Authenticate and store your API token",
+    Long:  "Use this command to set and save your API token in config.yaml for authentication.",
+    Run: func(cmd *cobra.Command, args []string) {
+        // Prompt user for API token
+        prompt := promptui.Prompt{
+            Label: "Enter your API token",
+            Mask:  '*', // Hides input for security
+        }
 
-		apiToken, err := prompt.Run()
-		if err != nil {
-			fmt.Println("❌ Error reading input:", err)
-			return
-		}
+        apiToken, err := prompt.Run()
+        if err != nil {
+            internal.Error("❌ Error reading input", err, nil)
+            return
+        }
 
-		// Save the token using internal function
-		err = internal.SaveAPIToken(apiToken)
-		if err != nil {
-			fmt.Println("❌ Error saving API token:", err)
-			return
-		}
+        // Save the token using internal function
+        internal.SetAPIKey(apiToken)
+        if err != nil {
+            internal.Error("❌ Error saving API token", err, nil)
+            return
+        }
 
-		fmt.Println("✅ API token saved successfully!")
-	},
+        internal.Info("✅ API token saved successfully!", nil)
+    },
 }
 
 func init() {
-	rootCmd.AddCommand(loginCmd)
+    rootCmd.AddCommand(loginCmd)
 }
