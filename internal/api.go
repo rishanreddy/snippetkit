@@ -34,7 +34,7 @@ type Snippet struct {
 
 // FetchSnippet fetches a single snippet from the API
 func FetchSnippet(snippetID string, apiKey string) (*Snippet, error) {
-	apiURL := fmt.Sprintf("http://localhost:3000/api/snippet/get/%s", snippetID)
+	apiURL := fmt.Sprintf("https://snippetkit.vercel.app/api/snippet/get/%s", snippetID)
 
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
@@ -81,7 +81,7 @@ func SearchSnippets(query, lang, tag string, limit int, apiKey string) ([]Snippe
 	}
 	params.Add("limit", fmt.Sprintf("%d", limit))
 
-	apiURL := fmt.Sprintf("http://localhost:3000/api/snippet/search?%s", params.Encode())
+	apiURL := fmt.Sprintf("https://snippetkit.vercel.app/api/snippet/search?%s", params.Encode())
 
 	// Create an HTTP request
 	req, err := http.NewRequest("GET", apiURL, nil)
@@ -118,7 +118,7 @@ func SearchSnippets(query, lang, tag string, limit int, apiKey string) ([]Snippe
 
 // VerifyToken verifies the API key by calling the `/api/token/verify` endpoint
 func VerifyToken(apiKey string) (bool, error) {
-	apiURL := "http://localhost:3000/api/token/verify"
+	apiURL := "https://snippetkit.vercel.app/api/token/verify"
 
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
