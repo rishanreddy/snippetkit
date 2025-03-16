@@ -130,7 +130,7 @@ func searchWithSpinner(query string) {
 		// Load API token from config file
 		apiToken, err := internal.GetAPIKey()
 		if err != nil {
-			fmt.Println("❌ Error getting API token:", err)
+			internal.Error("❌ Error getting API token:", err, nil)
 			return
 		}
 		snippets, err := internal.SearchSnippets(query, langFilter, tagFilter, limit, apiToken)

@@ -35,6 +35,7 @@ var infoCmd = &cobra.Command{
 
         myspinner := spinner.New()
         myspinner.Start("Fetching snippet info...")
+        fmt.Println()
         // Fetch snippet details from API
         snippet, err := internal.FetchSnippet(snippetID, apiToken)
         if err != nil {

@@ -33,6 +33,6 @@ func Execute() {
 
 func init() {
 	// Global Persistent Flags
-	rootCmd.PersistentFlags().StringP("config", "c", "", "Specify config file (default is $HOME/.snippetkit.yaml)")
+	rootCmd.PersistentFlags().StringP("config", "c", "", "Specify config file (default is $HOME/.snippetkit/config.yaml)")
 	viper.BindPFlag("config", rootCmd.PersistentFlags().Lookup("config"))
 }

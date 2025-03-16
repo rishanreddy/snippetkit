@@ -43,6 +43,7 @@ var addCmd = &cobra.Command{
         }
         myspinner := spinner.New()
         myspinner.Start("Fetching snippet...")
+        fmt.Println()
         // Fetch snippet from API
         snippet, err := internal.FetchSnippet(snippetID, apiToken)
 

@@ -12,7 +12,7 @@ import (
 func LoadConfig() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/.config/snippetkit")
+	viper.AddConfigPath(filepath.Join(os.Getenv("HOME"), ".config/snippetkit"))
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
 

@@ -20,6 +20,10 @@ var loginCmd = &cobra.Command{
         }
 
         apiToken, err := prompt.Run()
+        if err == promptui.ErrInterrupt {
+            internal.Info("Login cancelled.", nil)
+            return
+        }
         if err != nil {
             internal.Error("❌ Error reading input", err, nil)
             return
