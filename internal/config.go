@@ -32,12 +32,19 @@ func GetAPIKey() (string, error) {
 	return viper.GetString("api_key"), nil
 }
 
-func SetAPIKey(apiKey string) {
+func SetAPIKey(apiKey string) (bool) {
 	configPath := filepath.Join(os.Getenv("HOME"), ".config/snippetkit/config.yaml")
 	if valid, err := VerifyToken(apiKey); !valid || err != nil {
 		Error("API token is invalid or expired. Please run 'snippetkit login' to authenticate", err, nil)
-		return
+		return false
 	}
 	viper.Set("api_key", apiKey)
 	viper.WriteConfigAs(configPath)
+	return true
+}
+
+func RemoveAPIKey() error {
+	configPath := filepath.Join(os.Getenv("HOME"), ".config/snippetkit/config.yaml")
+	viper.Set("api_key", "")
+	return viper.WriteConfigAs(configPath)
 }
