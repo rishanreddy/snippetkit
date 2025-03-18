@@ -11,85 +11,92 @@ import (
 
 // Flags
 var (
-    langFilter string
-    tagFilter  string
-    limit      int
+	langFilter string
+	tagFilter  string
+	limit      int
 )
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
-    Use:   "search [query]",
-    Short: "Search for snippets by name or tags",
-    Long:  `Search for snippets in the SnippetKit repository by name or tags.`,
-    Args:  cobra.ExactArgs(1),
-    Run: func(cmd *cobra.Command, args []string) {
-        query := args[0]
-
-        // Run the search with a spinner
-        searchWithSpinner(query)
-    },
+	Use:   "search [query]",
+	Short: "Search for snippets by name, language, or tags",
+	Long:  "Search for snippets in the SnippetKit repository based on name, programming language, or associated tags.",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		query := args[0]
+		searchWithSpinner(query)
+	},
 }
 
 func init() {
-    rootCmd.AddCommand(searchCmd)
+	rootCmd.AddCommand(searchCmd)
 
-    // Define search flags
-    searchCmd.Flags().StringVarP(&langFilter, "lang", "l", "", "Filter snippets by programming language (e.g., typescript)")
-    searchCmd.Flags().StringVarP(&tagFilter, "tag", "t", "", "Filter snippets by tag (e.g., ui, shadcnui)")
-    searchCmd.Flags().IntVarP(&limit, "limit", "n", 10, "Limit the number of search results")
-}
-
-// fetchSnippetsMsg is used to pass search results into the UI
-type fetchSnippetsMsg struct {
-    snippets []internal.Snippet
-    err      error
+	// Define search flags
+	searchCmd.Flags().StringVarP(&langFilter, "lang", "l", "", "Filter snippets by programming language (e.g., typescript)")
+	searchCmd.Flags().StringVarP(&tagFilter, "tag", "t", "", "Filter snippets by tag (e.g., ui, shadcnui)")
+	searchCmd.Flags().IntVarP(&limit, "limit", "n", 10, "Limit the number of search results")
 }
 
 // searchWithSpinner runs the search command with a spinner
 func searchWithSpinner(query string) {
-    var wg sync.WaitGroup
-    wg.Add(1)
+	var wg sync.WaitGroup
+	wg.Add(1)
 
-    myspinner := spinner.New()
-    myspinner.Start("Searching for snippets...")
+	// Start spinner
 
-    // Run search in a separate goroutine
-    go func() {
-        defer wg.Done()
+	// Run search in a separate goroutine
+	go func() {
+		defer wg.Done()
 
-        // Load API token from config file
-        apiToken, err := internal.GetAPIKey()
-        if err != nil {
-            internal.Error("❌ Error getting API token:", err, nil)
-            myspinner.Error("❌ Error getting API token")
-            return
-        }
-        snippets, err := internal.SearchSnippets(query, langFilter, tagFilter, limit, apiToken)
-        if err != nil {
-            internal.Error("❌ Error searching snippets:", err, nil)
-            myspinner.Error("❌ Error searching snippets")
-            return
-        }
+		checkSpinner := spinner.New()
+		checkSpinner.Start("Checking auth status...")
+		// Load API token from config file
+		apiToken, err := internal.GetAPIKey()
+		if err != nil {
+			checkSpinner.Error("Failed to authenticate")
+			fmt.Print("Error authenticating. Run 'snippetkit login' to authenticate.")
+			internal.Error("Failed to get API key", err, nil)
+			return
+		}
 
-        myspinner.Success("Search completed successfully")
+		checkSpinner.Success("Authenticated successfully")
 
-        // Print search results
-        if len(snippets) == 0 {
-            internal.Info(fmt.Sprintf("🔍 No snippets found for: %s", query), nil)
-            return
-        }
+		myspinner := spinner.New()
+		myspinner.Start("Searching for snippets...")
+		// Fetch search results
+		snippets, err := internal.SearchSnippets(query, langFilter, tagFilter, limit, apiToken)
+		if err != nil {
+			internal.Error("Error searching snippets", err, nil)
+			myspinner.Error("Failed to fetch search results.")
+			return
+		}
 
-        output := "\n🔍 Search Results:\n"
-        for _, snippet := range snippets {
-            output += fmt.Sprintf("📌 %s - %s [%s]\n", snippet.ShortID, snippet.Title, snippet.Language)
-        }
+		myspinner.Success("Search completed successfully")
 
-        output += "\n💡 To install a snippet, use:\n"
-        output += "   snippetkit add <snippet_id>\n"
+		// Display results
+		if len(snippets) == 0 {
+			fmt.Println(infoStyle.Render("\n No snippets found for query: ") + labelStyle.Render(query))
+			return
+		}
 
-        internal.Info(output, nil)
-    }()
+		// Format search results
+		var output string
+		output += "\n" + titleStyle.Render("> Search Results:") + "\n"
+		for _, snippet := range snippets {
+			output += fmt.Sprintf(
+				"* %s  %s [%s]\n",
+				labelStyle.Render(snippet.ShortID),
+				snippet.Title,
+				snippet.Language,
+			)
+		}
 
-    // Wait for the search to complete
-    wg.Wait()
+		output += "\n" + infoStyle.Render("To install a snippet, run:") + "\n"
+		output += "   " + infoStyle.Render("snippetkit add <snippet_id>") + "\n"
+
+		fmt.Println(output)
+	}()
+
+	// Wait for the search to complete
+	wg.Wait()
 }
