@@ -267,14 +267,14 @@ func (o *Operation) ioloop() {
 			if buf != nil {
 				o.buf.Set(buf)
 			} else {
-				o.t.Bell()
+				// o.t.Bell()
 			}
 		case CharNext:
 			buf, ok := o.history.Next()
 			if ok {
 				o.buf.Set(buf)
 			} else {
-				o.t.Bell()
+				// o.t.Bell()
 			}
 		case CharDelete:
 			if o.buf.Len() > 0 || !o.IsNormalMode() {

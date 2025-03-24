@@ -27,6 +27,13 @@ var loginCmd = &cobra.Command{
 			prompt := promptui.Prompt{
 				Label: "Enter your API token",
 				Mask:  '*', // Hides input for security
+				Validate: func(input string) error {
+					if len(input) == 0 {
+						return fmt.Errorf("API token cannot be empty")
+					}
+					return nil
+				},
+				AllowEdit: true, // Allows pasting without character-by-character input
 			}
 
 			apiToken, err = prompt.Run()

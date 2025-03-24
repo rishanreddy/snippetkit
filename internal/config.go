@@ -2,7 +2,6 @@ package internal
 
 import (
 	"fmt"
-
 	"os"
 	"path/filepath"
 
@@ -15,13 +14,6 @@ func LoadConfig() {
 	viper.AddConfigPath(filepath.Join(os.Getenv("HOME"), ".config/snippetkit"))
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
-
-	viper.SetDefault("logging_enabled", true)
-	if viper.GetBool("logging_enabled") {
-		fmt.Println("\033[1;32m✔ Logging is enabled\033[0m")
-	} else {
-		fmt.Println("\033[1;31m✘ Logging is disabled\033[0m")
-	}
 
 	if err := viper.ReadInConfig(); err != nil {
 		Warn("No config file found. Using default settings.", nil)

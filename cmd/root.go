@@ -14,11 +14,12 @@ import (
 var (
 	titleStyle   = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#ea580c")) // Orange
 	labelStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#fbbf24"))            // Light Orange
-	successStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#10b981"))            // Green
+	successStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#228B22"))            // Lightish Dark Green
 	errorStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#ef4444"))            // Red
 	warningStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#f59e0b"))            // Yellow
 	divider      = lipgloss.NewStyle().Foreground(lipgloss.Color("#444")).Render(strings.Repeat("─", 40))
-	infoStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("#6b7280")) // Gray
+	infoStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("#6b7280"))                 // Gray
+	urlStyle     = lipgloss.NewStyle().Underline(true).Foreground(lipgloss.Color("#3b82f6")) // Blue
 )
 
 var rootCmd = &cobra.Command{
@@ -28,12 +29,20 @@ var rootCmd = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		internal.LoadConfig() // Load config before executing commands
 		internal.InitLogger()
+
+		loggingEnabled := viper.GetBool("logging_enabled")
+
+		if loggingEnabled {
+			fmt.Println(successStyle.Render("Logging enabled"))
+		} else {
+			fmt.Println(warningStyle.Render("Logging disabled"))
+		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		version := "internal.GetVersion() " // Pull the version dynamically
-		internal.Info(fmt.Sprintf("SnippetKit CLI v%s", version), nil)
+		fmt.Println(infoStyle.Render(fmt.Sprintf("CLI v%s", internal.GetVersion())))
 		cmd.Help() // Display the help command
 	},
+	Version: internal.GetVersion(),
 }
 
 func Execute() {
